@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
 import {
-    ScrollView,
     StyleSheet,
-    SafeAreaView,
-    TextInput,
-    Text,
     Keyboard,
-    Button,
     View,
     AsyncStorage,
     Alert
 } from 'react-native';
+import { Container, Header, Content, Button, Text, Form, Input, Item } from 'native-base';
 import api from '../../services/api';
 
 export default class LoginScreen extends Component {
@@ -27,7 +23,7 @@ export default class LoginScreen extends Component {
         this.submitLogin = this.submitLogin.bind(this);
     }
 
-    async submitLogin() {
+    submitLogin() {
         api.login(this.state.email, this.state.password)
             .then(async (result) => {
                 const json = result.data;
@@ -47,24 +43,36 @@ export default class LoginScreen extends Component {
 
     render() {
         return (
-            <SafeAreaView style={styles.container}>
-                <TextInput
-                    style={styles.inputBox}
-                    onChangeText={(value) => this.setState({email: value})}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    returnKeyType="next"/>
-
-                <TextInput
-                    style={styles.inputBox}
-                    onChangeText={(value) => this.setState({password: value})}
-                    placeholder="Password"
-                    returnKeyType="go"
-                    secureTextEntry={true}/>
-
-                <Button style={styles.button} title="Login" onPress={this.submitLogin}/>
-            </SafeAreaView>
+            <Container>
+                <Header/>
+                <Content>
+                    <Form>
+                        <Item>
+                            <Input
+                                style={styles.inputBox}
+                                onChangeText={(value) => this.setState({email: value})}
+                                placeholder="Email"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                returnKeyType="next"/>
+                        </Item>
+                        <Item>
+                            <Input
+                                style={styles.inputBox}
+                                onChangeText={(value) => this.setState({password: value})}
+                                placeholder="Password"
+                                returnKeyType="go"
+                                secureTextEntry={true}/>
+                        </Item>
+                        <Button style={styles.button} onPress={this.submitLogin}>
+                            <Text>Login</Text>
+                        </Button>
+                        <Button style={styles.button} onPress={() => { this.props.navigation.navigate('AppStack')}}>
+                            <Text>[[DEV]] Go to AppStack</Text>
+                        </Button>
+                    </Form>
+                </Content>
+            </Container>
         );
     }
 };
@@ -73,7 +81,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 300
+        //marginTop: 160
     },
     inputBox: {},
     button: {}

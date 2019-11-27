@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 300
+    marginTop: 160
   },
   inputBox: {},
   button: {}

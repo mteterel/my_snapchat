@@ -10,6 +10,7 @@ import RegisterScreen from "../screens/Auth/RegisterScreen";
 import {create} from "react-native/jest/renderer";
 //import DeviceInfo from 'react-native-device-info';
 import SafeAreaView from "react-native";
+import SnapCaptureScreen from "../screens/App/SnapCaptureScreen";
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -25,9 +26,8 @@ const AuthStack = createSwitchNavigator({
     Register: RegisterScreen
 }, config);
 
-const AppStack = createBottomTabNavigator({
-    Home: HomeScreen,
-    Settings: SettingsScreen
+const AppStack = createStackNavigator({
+    Home: SnapCaptureScreen,
 });
 
 const navigator = createSwitchNavigator({
