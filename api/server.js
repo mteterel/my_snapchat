@@ -17,6 +17,7 @@ import mongoose from "mongoose";
 import middleware from "./middleware";
 import config from "./config/index";
 import UserModel from "./models/User";
+import cors from 'cors';
 
 (async () => {
     await mongoose.connect(`${config.database.url}${config.database.name}`, {
@@ -27,6 +28,7 @@ import UserModel from "./models/User";
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(cors());
 
     app.post("/register", async (req, res) => {
         if (!req.body.email || !req.body.password) {
@@ -46,6 +48,8 @@ import UserModel from "./models/User";
     });
 
     app.post("/login", async (req, res) => {
+        console.log(req.body);
+
         if (!req.body.email || !req.body.password) {
             res.json({ data: "Missing parameters" });
             return;
