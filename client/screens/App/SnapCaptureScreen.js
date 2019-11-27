@@ -13,6 +13,10 @@ import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 
 export default class SnapCaptureScreen extends Component {
+  static navigationOptions = {
+    headerMode: 'none'
+  };
+
   camera = null;
 
   constructor(props) {
@@ -52,7 +56,8 @@ export default class SnapCaptureScreen extends Component {
     if (this.camera) {
       const photo = await this.camera.takePictureAsync();
       this.camera.pausePreview();
-      this.setState({picture: photo});
+      await this.setState({picture: photo});
+      this.props.navigation.navigate('Share');
     }
   }
 
@@ -60,7 +65,7 @@ export default class SnapCaptureScreen extends Component {
     if (this.state.picture !== null) {
       return (
           <Camera
-              style={styles.preview}
+              style={{ flex: 1 }}
               ratio="16:9"
               ref={camera => this.camera = camera}
               type={this.state.cameraType}
@@ -99,9 +104,6 @@ export default class SnapCaptureScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  preview: {
-    flex: 1
-  },
   uiContainer: {
     position: 'absolute',
     width: '100%',

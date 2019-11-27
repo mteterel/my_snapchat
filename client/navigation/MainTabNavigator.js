@@ -11,6 +11,7 @@ import {create} from "react-native/jest/renderer";
 //import DeviceInfo from 'react-native-device-info';
 import SafeAreaView from "react-native";
 import SnapCaptureScreen from "../screens/App/SnapCaptureScreen";
+import SnapShareScreen from "../screens/App/SnapShareScreen";
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -28,7 +29,8 @@ const AuthStack = createSwitchNavigator({
 
 const AppStack = createStackNavigator({
     Home: SnapCaptureScreen,
-});
+    Share: SnapShareScreen,
+}, config);
 
 const navigator = createSwitchNavigator({
     Auth: AuthStack,

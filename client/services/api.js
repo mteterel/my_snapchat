@@ -13,5 +13,10 @@ export default {
         return axios.post(`${config.apiUrl}/login`, {
             email: email, password: password
         });
+    },
+    register: (email, password) => {
+        return axios.post(`${config.apiUrl}/register`, {
+            email: email, password: password
+        });
     }
 }

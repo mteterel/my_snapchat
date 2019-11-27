@@ -1,25 +1,51 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, {Component} from 'react';
 import {
-  Button,
   StyleSheet,
-  Text,
-  SafeAreaView,
-  View,
-  Dimensions, SafeAreaViewComponent, TouchableOpacity, Alert
 } from 'react-native';
-import * as Permissions from 'expo-permissions';
-import { Camera } from 'expo-camera';
+import { Container, Header, Content, List, ListItem, Text, Left, Body } from "native-base";
 
 export default class SnapShareScreen extends Component {
+  static navigationOptions = {
+    title: 'Share Snap'
+  };
+
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-        <View style={{flex: 1}}>
-        </View>
+        <Container>
+          <Content>
+            <List>
+              <ListItem avatar>
+                <Left>
+                  <Text>@</Text>
+                </Left>
+                <Body>
+                  <Text>Simon Mignolet</Text>
+                </Body>
+              </ListItem>
+              <ListItem avatar>
+                <Left>
+                  <Text>@</Text>
+                </Left>
+                <Body>
+                  <Text>Simon Mignolet</Text>
+                </Body>
+              </ListItem>
+              <ListItem avatar>
+                <Left>
+                  <Text>@</Text>
+                </Left>
+                <Body>
+                  <Text>Simon Mignolet</Text>
+                </Body>
+              </ListItem>
+            </List>
+          </Content>
+        </Container>
     )
   }
 }

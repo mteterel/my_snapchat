@@ -6,7 +6,7 @@ import {
     AsyncStorage,
     Alert
 } from 'react-native';
-import { Container, Header, Content, Button, Text, Form, Input, Item } from 'native-base';
+import {Container, Header, Content, Button, Text, Form, Input, Item, Toast} from 'native-base';
 import api from '../../services/api';
 
 export default class LoginScreen extends Component {
@@ -33,7 +33,7 @@ export default class LoginScreen extends Component {
                     api.setApiToken(json.data.token);
                     this.props.navigation.navigate('AppStack');
                 } else {
-                    Alert.alert("Oh snap !", json.data);
+                    Toast.show({ text: json.data, type: 'danger', buttonText: 'Dismiss' });
                 }
             })
             .catch((err) => {
@@ -43,7 +43,7 @@ export default class LoginScreen extends Component {
 
     render() {
         return (
-            <Container>
+            <Container style={styles.container}>
                 <Header/>
                 <Content>
                     <Form>
@@ -67,6 +67,9 @@ export default class LoginScreen extends Component {
                         <Button style={styles.button} onPress={this.submitLogin}>
                             <Text>Login</Text>
                         </Button>
+                        <Button transparent={true} style={styles.button} onPress={() => { this.props.navigation.navigate('Register')}}>
+                            <Text>Don't have an account yet ? Sign up</Text>
+                        </Button>
                         <Button style={styles.button} onPress={() => { this.props.navigation.navigate('AppStack')}}>
                             <Text>[[DEV]] Go to AppStack</Text>
                         </Button>
@@ -79,10 +82,5 @@ export default class LoginScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        //marginTop: 160
-    },
-    inputBox: {},
-    button: {}
+    }
 });
