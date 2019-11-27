@@ -7,26 +7,25 @@ import {
   View,
 } from 'react-native';
 
-import { MonoText } from '../components/StyledText';
-export default function HomeScreen() {
+export default function LandingScreen() {
   return (
       <View style={styles.homescreen}>
         <Text style={styles.logoText}>OsefChat</Text>
           <Button
-              // onPress = {handlePress}
-              title = "Login"
-              color = "#9230af"
+              onPress={() => {this.props.navigation.navigate('Login')}}
+              title="Login"
+              color="#9230af"
           />
           <Button
-              // onPress = {handlePress}
-              title = "Register"
-              color = "#3e43e2"
+              onPress={() => {this.props.navigation.navigate('Register')}}
+              title="Register"
+              color="#3e43e2"
           />
       </View>
   );
 }
 
-HomeScreen.navigationOptions = {
+LandingScreen.navigationOptions = {
   header: null,
 };
 

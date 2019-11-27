@@ -18,9 +18,15 @@ export default class RegisterScreen extends Component {
         super(props);
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            passwordConfirm: ""
         };
         this.submitRegister = this.submitRegister.bind(this);
+        this.validatePasswords = this.validatePasswords.bind(this);
+    }
+
+    validatePasswords() {
+        return this.state.password === this.state.passwordConfirm;
     }
 
     performLogin(email, password) {
@@ -83,7 +89,9 @@ export default class RegisterScreen extends Component {
                                 onChangeText={(value) => this.setState({password: value})}
                                 placeholder="Password"
                                 returnKeyType="next"
-                                secureTextEntry={true}/>
+                                secureTextEntry={true}
+                                success={this.state.passwordConfirm && this.validatePasswords()}
+                                error={this.state.passwordConfirm && !this.validatePasswords()}/>
                         </Item>
                         <Item>
                             <Input
@@ -91,7 +99,9 @@ export default class RegisterScreen extends Component {
                                 onChangeText={(value) => this.setState({passwordConfirm: value})}
                                 placeholder="Confirm password"
                                 returnKeyType="go"
-                                secureTextEntry={true}/>
+                                secureTextEntry={true}
+                                success={this.state.password && this.validatePasswords()}
+                                error={this.state.password && !this.validatePasswords()}/>
                         </Item>
                         <Button style={styles.button} onPress={this.submitRegister}>
                             <Text>Register</Text>

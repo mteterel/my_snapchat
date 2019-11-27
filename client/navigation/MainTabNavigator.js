@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import LandingScreen from '../screens/LandingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import LoginScreen from "../screens/Auth/LoginScreen";
 import RegisterScreen from "../screens/Auth/RegisterScreen";
@@ -27,12 +27,13 @@ const AuthStack = createSwitchNavigator({
     Register: RegisterScreen
 }, config);
 
-const AppStack = createStackNavigator({
+const AppStack = createSwitchNavigator({
     Home: SnapCaptureScreen,
     Share: SnapShareScreen,
 }, config);
 
 const navigator = createSwitchNavigator({
+    Landing: LandingScreen,
     Auth: AuthStack,
     AppStack: AppStack
 });
