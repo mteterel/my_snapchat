@@ -4,6 +4,7 @@ import {
     Alert,
     AsyncStorage,
     StyleSheet,
+    Dimensions,
 } from 'react-native';
 import { Container, Content, Button, Text, View, Toast, Spinner } from 'native-base';
 import api from "../services/api";
@@ -54,32 +55,55 @@ export default class LandignScreen extends Component {
                     </View>
                 )}
                 {!this.state.isAutoLogin && (
-                    <View>
+                    <View style={styles.homescreen}>
                         <Text style={styles.logoText}>OsefChat</Text>
-                        <Button
+                        <Button style={styles.button1}
                             onPress={() => {
                                 this.props.navigation.navigate('Login')
                             }}
-                            color="#9230af"><Text>Login</Text></Button>
-                        <Button
+                            ><Text>Login</Text></Button>
+                        <Button style={styles.button2}
                             onPress={() => {
                                 this.props.navigation.navigate('Register')
                             }}
-                            color="#3e43e2"><Text>Register</Text></Button>
+                            ><Text>Register</Text></Button>
                     </View>)}
             </Container>
         );
     }
 }
 
+var width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   homescreen:{
     flex: 1,
     justifyContent: "center",
-    backgroundColor: '#1d0a23',
+    alignItems: "center",
+    backgroundColor: '#441444',
   },
   logoText:{
     color: '#ffffff',
-    fontSize: 31
+    fontSize: 31,
+    paddingBottom: 50,
+  },
+  button1:{
+      backgroundColor: "#9d2e9d",
+      width: width,
+      justifyContent: "center",
+      alignItems: "center",
+      height: 50,
+      marginTop: 20,
+      position: 'absolute',
+      bottom:0,
+  },
+  button2:{
+      backgroundColor: "#9230af",
+      width: width,
+      justifyContent: "center",
+      alignItems: "center",
+      height: 50,
+      // marginTop: 20,
+      position: 'absolute',
+      bottom:50,
   }
 });
