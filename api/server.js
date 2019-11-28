@@ -112,7 +112,8 @@ import SnapModel from "./models/Snap";
 
     app.get("/snap/:id", middleware.validateToken, async (req, res) => {
         const snap = await SnapModel.findById(req.params.id);
-        res.end(snap.file, 'binary');
+        const buffer = Buffer.from(snap.file).toString('base64');
+        res.json(buffer);
     });
 
     app.get("/snaps", middleware.validateToken, async (req, res) => {
@@ -126,7 +127,9 @@ import SnapModel from "./models/Snap";
         res.json({ data: data });
     });
 
-    app.post("/seen", middleware.validateToken, (req, res) => {});
+    app.post("/seen", middleware.validateToken, (req, res) => {
+
+    });
 
     app.listen(4242, () => {
         console.log("Server has been started successfully.");

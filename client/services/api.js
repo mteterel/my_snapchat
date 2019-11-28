@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let config = {
-    apiUrl: 'http://10.128.173.209:4242',
+    apiUrl: 'http://localhost:4242',
     token: null,
 };
 
@@ -26,7 +26,7 @@ export default {
     },
     getAllUsers: () => {
         return axios.get(`${config.apiUrl}/all`, {
-            headers: { token: config.token }
+            headers: {token: config.token}
         });
     },
     sendSnap: (contactEmail, duration, picture) => {
@@ -34,18 +34,25 @@ export default {
             duration: duration,
             to: contactEmail,
             image: picture
-        },{
-            headers: { token: config.token }
+        }, {
+            headers: {token: config.token}
         });
     },
     getAllSnaps: () => {
         return axios.get(`${config.apiUrl}/snaps`, {
-            headers: { token: config.token }
+            headers: {token: config.token}
         });
     },
     getSnap: (snapId) => {
         return axios.get(`${config.apiUrl}/snap/${snapId}`, {
-            headers: {token: config.token }
+            headers: {token: config.token}
+        });
+    },
+    removeSnap: (snapId) => {
+        return axios.post(`${config.apiUrl}/seen`, {
+            snap_id: snapId
+        }, {
+            headers: {token: config.token}
         });
     }
 }

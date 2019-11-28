@@ -5,13 +5,14 @@ import api from "../../services/api";
 
 export default class SnapViewScreen extends Component {
     static navigationOptions = ({navigation}) => ({
-        title: `Snap from ${navigation.state.params.sender}`
+        title: `Snap from ${navigation.state.params.sender}`,
+        headerLeft: null
     });
 
     constructor(props) {
         super(props);
         this.state = {
-            timeLeft: 3,
+            timeLeft: 8,
             picture: null
         };
         this.intervalId = null;
@@ -23,15 +24,16 @@ export default class SnapViewScreen extends Component {
             api.getSnap(snapId)
                 .then((response) => {
                     this.refreshCountdown();
-                    const oribuffer = response.data.toString('base64');
-                    Alert.alert("taille", oribuffer.length + " bytes");
+
+                    //Alert.alert("taille", JSON.stringify(response.data).length.toString());
                     //const buffer = Buffer.from(response.data).toString('base64');
-                    this.setState({picture: "buffer here"}, () => {
+                    //Alert.alert("err", JSON.stringify(response.data).substr(0, 128));
+                    this.setState({picture: response.data}, () => {
                         this.intervalId = setInterval(this.refreshCountdown.bind(this), 1000);
                     });
                 })
                 .catch((err) => {
-                    Alert.alert(err.toString());
+                    Alert.alert(err.toString(), JSON.stringify(err));
                 });
         }
     }
@@ -62,7 +64,6 @@ export default class SnapViewScreen extends Component {
     render() {
         return (
             <Container>
-                <Content style={{flex: 1}}>
                     {this.state.picture && (
                         <Image style={{aspectRatio: 9 / 16, resizeMode: 'cover'}}
                                source={{uri: "data:image/jpeg;base64," + this.state.picture}}/>
@@ -75,7 +76,6 @@ export default class SnapViewScreen extends Component {
                     {(this.state.picture === null) && (
                         <Spinner/>
                     )}
-                </Content>
             </Container>
         );
     }
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     countdown: {
         fontSize: 130,
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: 'rgba(255, 255, 255, 0.75)',
         textShadowColor: 'black',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 3
