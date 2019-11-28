@@ -49,8 +49,6 @@ import SnapModel from "./models/Snap";
     });
 
     app.post("/login", async (req, res) => {
-        console.log(req.body);
-
         if ((!req.body.email || !req.body.password) && (!req.body.token)) {
             res.json({data: "Missing parameters"});
             return;
@@ -112,8 +110,22 @@ import SnapModel from "./models/Snap";
         }
     });
 
-    app.get("/snap/:id", middleware.validateToken, (req, res) => {});
-    app.get("/snaps", middleware.validateToken, (req, res) => {});
+    app.get("/snap/:id", middleware.validateToken, async (req, res) => {
+        const snap = await SnapModel.findById(req.params.id);
+        res.end(snap.file, 'binary');
+    });
+
+    app.get("/snaps", middleware.validateToken, async (req, res) => {
+        const allSnaps = await SnapModel.find();
+        const data = allSnaps.map((elem) => {
+            return {
+                snap_id: elem._id,
+                from: elem.from
+            }
+        });
+        res.json({ data: data });
+    });
+
     app.post("/seen", middleware.validateToken, (req, res) => {});
 
     app.listen(4242, () => {

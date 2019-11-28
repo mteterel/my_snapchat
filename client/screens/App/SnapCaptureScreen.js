@@ -75,7 +75,7 @@ export default class SnapCaptureScreen extends Component {
   snapPicture() {
     if (this.camera) {
       const options = {
-        quality: 0.1,
+        quality: 0.6,
         base64: true,
         exif: false,
       };
@@ -120,6 +120,8 @@ export default class SnapCaptureScreen extends Component {
                 <MaterialIcons name="camera" size={64} style={styles.iconButton} onPress={this.snapPicture}/>
                 <MaterialIcons name={this.getFlashIconName()} size={36} style={styles.iconButton}
                                onPress={this.toggleFlash}/>
+                <MaterialIcons name="inbox" size={36} style={styles.iconButton}
+                               onPress={() => { this.props.navigation.navigate('Inbox') }}/>
               </View>
             </View>
           </View>

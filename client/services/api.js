@@ -42,5 +42,10 @@ export default {
         return axios.get(`${config.apiUrl}/snaps`, {
             headers: { token: config.token }
         });
+    },
+    getSnap: (snapId) => {
+        return axios.get(`${config.apiUrl}/snap/${snapId}`, {
+            headers: {token: config.token }
+        });
     }
 }
