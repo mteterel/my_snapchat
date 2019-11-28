@@ -4,7 +4,7 @@ import {
   StyleSheet,
     Alert
 } from 'react-native';
-import { Container, Header, Content, Button, List, ListItem, Text, Left, Body, Right, CheckBox, Toast, Spinner } from "native-base";
+import { Container, Header, Content, Button, List, ListItem, Text, Left, Icon, Body, Right, CheckBox, Form, Toast, Spinner, Thumbnail, Picker, Separator } from "native-base";
 import api from "../../services/api";
 
 export default class SnapShareScreen extends Component {
@@ -18,12 +18,10 @@ export default class SnapShareScreen extends Component {
       loadingContacts: true,
       contacts: [],
       selectedContact: null,
+      selectedSnapDuration: "10"
     };
 
     this.onContactSelected = this.onContactSelected.bind(this);
-    /*setTimeout(() => {
-      this.setState({ loadingContacts: false });
-    }, 600);*/
   }
 
   componentDidMount() {
@@ -41,7 +39,7 @@ export default class SnapShareScreen extends Component {
   }
 
   async onContactSelected(email) {
-    await this.setState({ selectedContact: email });
+    await this.setState({selectedContact: email});
 
     Toast.show({
       text: `Sending Snap to ${this.state.selectedContact}...`
@@ -60,9 +58,37 @@ export default class SnapShareScreen extends Component {
             {this.state.loadingContacts && <Spinner/>}
             {!this.state.loadingContacts &&
             <List>
+              <Separator bordered>
+                <Text>Snap Settings</Text>
+              </Separator>
+              <ListItem>
+                <Left>
+                  <Text>Snap Duration</Text>
+                </Left>
+                <Right>
+                  <Picker
+                      style={{width:100+'%'}}
+                      mode="dropdown"
+                      iosHeader="Snap Duration"
+                      iosIcon={<Icon name="arrow-down"/>}
+                      selectedValue={this.state.selectedSnapDuration}
+                      onValueChange={(value) => this.setState({ selectedSnapDuration: value })}>
+                    <Picker.Item label="5 seconds" value="5"/>
+                    <Picker.Item label="10 seconds" value="10"/>
+                    <Picker.Item label="30 seconds" value="30"/>
+                    <Picker.Item label="60 seconds" value="60"/>
+                  </Picker>
+                </Right>
+              </ListItem>
+
+              <Separator bordered>
+                <Text>Contacts ({this.state.contacts.length})</Text>
+              </Separator>
               {this.state.contacts.map((elem, index) => {
                 return (
-                    <ListItem button={true} key={index} index={index} onPress={() => { this.onContactSelected(elem.email) }}>
+                    <ListItem button={true} key={index} index={index} onPress={() => {
+                      this.onContactSelected(elem.email)
+                    }}>
                       <Text>{elem.email}</Text>
                     </ListItem>
                 );
