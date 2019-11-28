@@ -51,6 +51,7 @@ export default class RegisterScreen extends Component {
 
     submitRegister() {
         const {email, password} = this.state;
+        Keyboard.dismiss();
 
         api.register(email, password)
             .then(async (result) => {

@@ -39,16 +39,30 @@ export default class SnapShareScreen extends Component {
   }
 
   async onContactSelected(email) {
-    await this.setState({selectedContact: email});
+      await this.setState({selectedContact: email});
 
-    Toast.show({
-      text: `Sending Snap to ${this.state.selectedContact}...`
-    });
+      Toast.show({
+          text: `Sending Snap to ${this.state.selectedContact}...`
+      });
 
-    setTimeout(() => {
-      Toast.show({type: 'success', text: `Successfully sent a Snap to ${this.state.selectedContact}`});
-      this.props.navigation.navigate('Home');
-    }, 1400);
+      const photo = this.props.navigation.getParam('capturedPicture', null);
+
+      if (!photo)
+          throw new Error("capturedPicture is null");
+
+      api.sendSnap(email, this.state.selectedSnapDuration, photo.base64)
+          .then((response) => {
+              if (response.data.data === 'Snap Created')
+                  Toast.show({type: 'success', text: `Successfully sent a Snap to ${this.state.selectedContact}`});
+              else
+                  Toast.show({type: 'danger', text: `Failed to send Snap: ${response.data.data}`});
+          })
+          .catch((err) => {
+              Alert.alert("Oh snap !", err.toString());
+          })
+          .then(() => {
+              this.props.navigation.navigate('Home');
+          });
   }
 
   render() {
@@ -63,11 +77,10 @@ export default class SnapShareScreen extends Component {
               </Separator>
               <ListItem>
                 <Left>
-                  <Text>Snap Duration</Text>
+                  <Text>Duration</Text>
                 </Left>
                 <Right>
                   <Picker
-                      style={{width:100+'%'}}
                       mode="dropdown"
                       iosHeader="Snap Duration"
                       iosIcon={<Icon name="arrow-down"/>}

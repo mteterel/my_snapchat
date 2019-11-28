@@ -74,10 +74,18 @@ export default class SnapCaptureScreen extends Component {
 
   snapPicture() {
     if (this.camera) {
-      this.camera.takePictureAsync()
+      const options = {
+        quality: 0.1,
+        base64: true,
+        exif: false,
+      };
+
+      this.camera.takePictureAsync(options)
           .then((photo) => {
             this.setState({picture: photo});
-            this.props.navigation.navigate('Share');
+            this.props.navigation.navigate('Share', {
+              capturedPicture: photo
+            });
           })
           .catch((err) => {
             Toast.show({text: err.toString()});

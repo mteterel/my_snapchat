@@ -24,6 +24,7 @@ export default class LoginScreen extends Component {
     }
 
     submitLogin() {
+        Keyboard.dismiss();
         api.login(this.state.email, this.state.password)
             .then(async (result) => {
                 const json = result.data;
@@ -71,9 +72,6 @@ export default class LoginScreen extends Component {
                         </Button>
                         <Button transparent={true} style={styles.button} onPress={() => { this.props.navigation.navigate('Register')}}>
                             <Text>Don't have an account yet ? Sign up</Text>
-                        </Button>
-                        <Button style={styles.button} onPress={() => { this.props.navigation.navigate('AppStack')}}>
-                            <Text>[[DEV]] Go to AppStack</Text>
                         </Button>
                     </Form>
                 </Content>
