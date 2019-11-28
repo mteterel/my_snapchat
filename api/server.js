@@ -17,6 +17,8 @@ import mongoose from "mongoose";
 import middleware from "./middleware";
 import config from "./config/index";
 import UserModel from "./models/User";
+import cors from 'cors';
+import SnapModel from "./models/Snap";
 
 (async () => {
     await mongoose.connect(`${config.database.url}${config.database.name}`, {
@@ -25,12 +27,13 @@ import UserModel from "./models/User";
     });
 
     const app = express();
-    app.use(express.json());
+    app.use(express.json({ limit: '8mb', extended: true}));
     app.use(express.urlencoded({ extended: true }));
+    app.use(cors());
 
     app.post("/register", async (req, res) => {
         if (!req.body.email || !req.body.password) {
-            res.json({ data: "Missing parameters" });
+            res.json({data: "Missing parameters"});
             return;
         }
 
@@ -39,40 +42,90 @@ import UserModel from "./models/User";
                 email: req.body.email,
                 password: req.body.password
             });
-            res.json({ data: { email: user.email } });
+            res.json({data: {email: user.email}});
         } catch (err) {
-            res.json({ data: err.toString() });
+            res.json({data: err.toString()});
         }
     });
 
     app.post("/login", async (req, res) => {
-        if (!req.body.email || !req.body.password) {
-            res.json({ data: "Missing parameters" });
+        if ((!req.body.email || !req.body.password) && (!req.body.token)) {
+            res.json({data: "Missing parameters"});
             return;
         }
-
-        const user = await UserModel.findOne({
-            email: req.body.email,
-            password: req.body.password
-        });
-
-        if (!user) {
-            res.json({ data: "Invalid credentials." });
-            return;
-        }
-
-        res.json({
-            data: {
-                email: user.email,
-                token: jwt.sign({ id: user.id, email: user.email }, config.app.secret)
+        if (req.body.token) {
+            try {
+                const userData = await jwt.verify(req.body.token, config.app.secret);
+                res.json({data: {email: userData.email, token: req.body.token}});
+            } catch (err) {
+                res.json({data: "Invalid token."});
             }
-        });
+        } else {
+            const user = await UserModel.findOne({
+                email: req.body.email,
+                password: req.body.password
+            });
+
+            if (!user) {
+                res.json({data: "Invalid credentials."});
+                return;
+            }
+
+            res.json({
+                data: {
+                    email: user.email,
+                    token: jwt.sign({id: user.id, email: user.email}, config.app.secret)
+                }
+            });
+        }
     });
 
-    app.get("/all", middleware.validateToken, (req, res) => {});
-    app.post("/snap", (req, res) => {});
-    app.get("/snap/:id", middleware.validateToken, (req, res) => {});
-    app.get("/snaps", middleware.validateToken, (req, res) => {});
+    app.get("/all", middleware.validateToken, async (req, res) => {
+        try {
+            const allUsers = await UserModel.find({ email: { $ne: req.user.email }});
+            res.json({
+                data: allUsers.map((elem) => {
+                    return {email: elem.email}
+                })
+            });
+        } catch(err) {
+            res.json({
+                data: err.toString()
+            });
+        }
+    });
+
+    app.post("/snap", middleware.validateToken, (req, res) => {
+        try {
+            const snap = SnapModel.create({
+                from: req.user.email,
+                to: req.body.to,
+                duration: req.body.duration,
+                file: Buffer.from(req.body.image, 'base64')
+            });
+
+            return res.json({data: 'Snap Created'});
+        } catch (err) {
+            return res.json({data: err.toString()});
+        }
+    });
+
+    app.get("/snap/:id", middleware.validateToken, async (req, res) => {
+        const snap = await SnapModel.findById(req.params.id);
+        res.end(snap.file, 'binary');
+    });
+
+    app.get("/snaps", middleware.validateToken, async (req, res) => {
+        const allSnaps = await SnapModel.find();
+        const data = allSnaps.map((elem) => {
+            return {
+                snap_id: elem._id,
+                from: elem.from
+            }
+        });
+        res.json({ data: data });
+    });
+
     app.post("/seen", middleware.validateToken, (req, res) => {});
 
     app.listen(4242, () => {
