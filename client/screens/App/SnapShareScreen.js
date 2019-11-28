@@ -2,8 +2,10 @@ import * as WebBrowser from 'expo-web-browser';
 import React, {Component} from 'react';
 import {
   StyleSheet,
+    Alert
 } from 'react-native';
-import { Container, Header, Content, Button, List, ListItem, Text, Left, Body, Right, CheckBox } from "native-base";
+import { Container, Header, Content, Button, List, ListItem, Text, Left, Body, Right, CheckBox, Toast, Spinner } from "native-base";
+import api from "../../services/api";
 
 export default class SnapShareScreen extends Component {
   static navigationOptions = {
@@ -13,36 +15,60 @@ export default class SnapShareScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contacts: [
-        'Rachel Greene',
-        'Monica Geller',
-        'Phoebe Buffay',
-        'Joey Tribbiani',
-        'Chandler Bing',
-        'Ross Geller'
-      ]
+      loadingContacts: true,
+      contacts: [],
+      selectedContact: null,
     };
+
+    this.onContactSelected = this.onContactSelected.bind(this);
+    /*setTimeout(() => {
+      this.setState({ loadingContacts: false });
+    }, 600);*/
+  }
+
+  componentDidMount() {
+    api.getAllUsers()
+        .then((response) => {
+          const json = response.data;
+          if (json.data && typeof (json.data) === 'object')
+            this.setState({loadingContacts: false, contacts: json.data});
+          else
+            Toast.show({type: 'danger', text: json.data.toString()});
+        })
+        .catch((err) => {
+          Alert.alert('Oh snap !', err.toString());
+        });
+  }
+
+  async onContactSelected(email) {
+    await this.setState({ selectedContact: email });
+
+    Toast.show({
+      text: `Sending Snap to ${this.state.selectedContact}...`
+    });
+
+    setTimeout(() => {
+      Toast.show({type: 'success', text: `Successfully sent a Snap to ${this.state.selectedContact}`});
+      this.props.navigation.navigate('Home');
+    }, 1400);
   }
 
   render() {
-    const elements = [];
-
     return (
         <Container>
-          <Header>
-            <Left>
-              <Text>0 selected</Text>
-            </Left>
-            <Right>
-              <Button hasText transparent>
-                <Text>Send</Text>
-              </Button>
-            </Right>
-          </Header>
           <Content>
-            { /*this.state.contacts.map((elem, index) => {
-              return <Button transparent key={index}><Text>Name</Text></Button>;
-            })*/ }
+            {this.state.loadingContacts && <Spinner/>}
+            {!this.state.loadingContacts &&
+            <List>
+              {this.state.contacts.map((elem, index) => {
+                return (
+                    <ListItem button={true} key={index} index={index} onPress={() => { this.onContactSelected(elem.email) }}>
+                      <Text>{elem.email}</Text>
+                    </ListItem>
+                );
+              })}
+            </List>
+            }
           </Content>
         </Container>
     )

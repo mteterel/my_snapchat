@@ -18,19 +18,23 @@ import UserModel from "../models/User";
 export default {
     validateToken: async (req, res, next) => {
         if (!req.headers.token) {
-            res.json({ data: "Invalid token"});
+            res.status(401).json({ data: "Invalid token"});
             return;
         }
 
-        const data = await jwt.verify(req.headers.token, config.app.secret);
-        const user = await UserModel.findById(data.id);
+        try {
+            const data = await jwt.verify(req.headers.token, config.app.secret);
+            const user = await UserModel.findById(data.id);
 
-        if (user === null) {
-            res.json({ data: "Invalid token"});
-            return;
+            if (user === null) {
+                res.status(401).json({data: "Invalid token"});
+                return;
+            }
+
+            req.user = user;
+            next();
+        } catch (err) {
+            res.json({data: err.toString()});
         }
-
-        req.user = user;
-        next();
     }
 };

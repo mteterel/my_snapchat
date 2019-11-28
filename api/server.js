@@ -73,7 +73,20 @@ import cors from 'cors';
         });
     });
 
-    app.get("/all", middleware.validateToken, (req, res) => {});
+    app.get("/all", middleware.validateToken, async (req, res) => {
+        try {
+            const allUsers = await UserModel.find({ email: { $ne: req.user.email }});
+            res.json({
+                data: allUsers.map((elem) => {
+                    return {email: elem.email}
+                })
+            });
+        } catch(err) {
+            res.json({
+                data: err.toString()
+            });
+        }
+    });
     app.post("/snap", (req, res) => {});
     app.get("/snap/:id", middleware.validateToken, (req, res) => {});
     app.get("/snaps", middleware.validateToken, (req, res) => {});

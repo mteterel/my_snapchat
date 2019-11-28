@@ -49,6 +49,7 @@ export default class LoginScreen extends Component {
                     <Form>
                         <Item>
                             <Input
+                                floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({email: value})}
                                 placeholder="Email"
@@ -58,6 +59,7 @@ export default class LoginScreen extends Component {
                         </Item>
                         <Item>
                             <Input
+                                floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({password: value})}
                                 placeholder="Password"

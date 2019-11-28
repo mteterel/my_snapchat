@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let config = {
-    apiUrl: 'http://10.128.173.209:4242',
+    apiUrl: 'http://127.0.0.1:4242',
     token: null,
 };
 
@@ -18,5 +18,13 @@ export default {
         return axios.post(`${config.apiUrl}/register`, {
             email: email, password: password
         });
+    },
+    getAllUsers: () => {
+        return axios.get(`${config.apiUrl}/all`, {
+            headers: { token: config.token }
+        });
+    },
+    sendSnap: (contactEmail, picture) => {
+
     }
 }

@@ -76,6 +76,7 @@ export default class RegisterScreen extends Component {
                     <Form>
                         <Item>
                             <Input
+                                floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({email: value})}
                                 placeholder="Email"
@@ -85,6 +86,7 @@ export default class RegisterScreen extends Component {
                         </Item>
                         <Item>
                             <Input
+                                floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({password: value})}
                                 placeholder="Password"
@@ -95,6 +97,7 @@ export default class RegisterScreen extends Component {
                         </Item>
                         <Item>
                             <Input
+                                floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({passwordConfirm: value})}
                                 placeholder="Confirm password"
