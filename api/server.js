@@ -132,8 +132,16 @@ const crypto = require('crypto');
         res.json({ data: data });
     });
 
-    app.post("/seen", middleware.validateToken, (req, res) => {
-
+    app.post("/seen", middleware.validateToken, async (req, res) => {
+        var currentSnap = new mongoose.Types.ObjectId(req.body.snap_id);
+        console.log(currentSnap);
+        const snapToDelete = await SnapModel.findById(currentSnap , function (err) {
+            if(err) console.log(err);
+            else {
+                console.log("Successful deletion");
+            }
+        });
+        snapToDelete.remove();
     });
 
     app.listen(4242, () => {
