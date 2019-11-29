@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {StyleSheet, ScrollView, Alert} from "react-native";
-import {Container, List, ListItem, Button, Left, Body, Text, Right, Toast} from "native-base";
+import {StyleSheet, Alert} from "react-native";
+import {Container, List, ListItem, Button, Left, Body, Text, Right, Toast, Content} from "native-base";
 import {MaterialIcons} from "@expo/vector-icons";
 import api from "../../services/api";
 
@@ -44,7 +44,7 @@ export default class InboxScreen extends Component {
     render() {
         return (
             <Container>
-                <ScrollView>
+                <Content>
                     <List>
                         {this.state.receivedSnaps.map((element) => {
                             return (
@@ -73,7 +73,7 @@ export default class InboxScreen extends Component {
                             )
                         })}
                     </List>
-                </ScrollView>
+                </Content>
             </Container>
         );
     }

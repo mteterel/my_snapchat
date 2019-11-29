@@ -2,13 +2,13 @@ import * as WebBrowser from 'expo-web-browser';
 import React, {Component} from 'react';
 import {
   StyleSheet,
-  SafeAreaView,
+  AsyncStorage,
   Dimensions, SafeAreaViewComponent, TouchableOpacity, Alert
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
-import { Container, Button, Toast, View, Content, Header, Text } from 'native-base';
+import { Container, Button, Toast, View, Content, Header, Text, Spinner } from 'native-base';
 import {PermissionResponse} from "expo-permissions";
 
 export default class SnapCaptureScreen extends Component {
@@ -21,6 +21,7 @@ export default class SnapCaptureScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isAskingPermission: true,
       hasCameraPermission: false,
       cameraType: Camera.Constants.Type.back,
       enableFlash: Camera.Constants.FlashMode.off
@@ -30,10 +31,18 @@ export default class SnapCaptureScreen extends Component {
     this.toggleFlash = this.toggleFlash.bind(this);
     this.getFlashIconName = this.getFlashIconName.bind(this);
     this.askCameraPermission = this.askCameraPermission.bind(this);
+    this.performLogout = this.performLogout.bind(this);
   }
 
   async componentDidMount() {
     await this.askCameraPermission();
+  }
+
+  performLogout() {
+    AsyncStorage.removeItem("token")
+        .then(() => {
+          this.props.navigation.navigate("Landing");
+        });
   }
 
   switchCameraType() {
@@ -75,19 +84,23 @@ export default class SnapCaptureScreen extends Component {
   snapPicture() {
     if (this.camera) {
       const options = {
-        quality: 0.6,
+        quality: 1.0,
         base64: true,
         exif: false,
+        skipProcessing: true
       };
+
+      this.setState({ isCapturing: true });
 
       this.camera.takePictureAsync(options)
           .then((photo) => {
-            this.setState({picture: photo});
+            this.setState({picture: photo, isCapturing: false});
             this.props.navigation.navigate('Share', {
               capturedPicture: photo
             });
           })
           .catch((err) => {
+            this.setState({isCapturing: false});
             Toast.show({text: err.toString()});
           });
     }
@@ -107,9 +120,18 @@ export default class SnapCaptureScreen extends Component {
   }
 
   renderUI() {
-    if (this.state.picture !== null) {
+    if (!this.state.isCapturing && this.state.picture !== null) {
       return (
           <View style={styles.uiContainer}>
+            <View style={styles.topControls}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
+                <MaterialIcons name="inbox" size={24} style={styles.iconButton}
+                               onPress={() => {
+                                 this.props.navigation.navigate('Inbox')
+                               }}/>
+                <MaterialIcons name="exit-to-app" size={24} style={styles.iconButton} onPress={this.performLogout}/>
+              </View>
+            </View>
             <View style={styles.bottomControls}>
               <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
                 <MaterialIcons
@@ -120,8 +142,6 @@ export default class SnapCaptureScreen extends Component {
                 <MaterialIcons name="camera" size={64} style={styles.iconButton} onPress={this.snapPicture}/>
                 <MaterialIcons name={this.getFlashIconName()} size={36} style={styles.iconButton}
                                onPress={this.toggleFlash}/>
-                <MaterialIcons name="inbox" size={36} style={styles.iconButton}
-                               onPress={() => { this.props.navigation.navigate('Inbox') }}/>
               </View>
             </View>
           </View>
@@ -140,30 +160,50 @@ export default class SnapCaptureScreen extends Component {
   }
 
   render() {
-    if (this.state.hasCameraPermission) {
-      return (
-          <View style={{flex: 1}}>
-            {this.renderCamera()}
-            {this.renderUI()}
-          </View>
-      )
-    } else {
-      return (
-          <View style={{flex: 1}}>
-            {this.renderRetryPermissionUI()}
-          </View>
-      )
-    }
+    return (
+        <Container>
+            {this.state.hasCameraPermission && (
+                <View style={{flex: 1}}>
+                  {this.renderCamera()}
+                  {this.renderUI()}
+                </View>
+            )}
+            {(!this.state.isAskingPermission && !this.state.hasCameraPermission) && (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                  {this.renderRetryPermissionUI()}
+                </View>
+            )}
+            {(this.state.isAskingPermission && !this.state.hasCameraPermission) && (
+                <Spinner/>
+            )}
+        </Container>
+    )
   }
 
+  /*if (this.state.hasCameraPermission) {
+    return (
+        <View style={{flex: 1}}>
+          {this.renderCamera()}
+          {this.renderUI()}
+        </View>
+    )
+  } else {
+    return (
+        <View style={{flex: 1}}>
+          {this.renderRetryPermissionUI()}
+        </View>
+    )
+  }*/
+
   async askCameraPermission() {
+    this.setState({isAskingPermission: true});
     await Permissions.askAsync(Permissions.CAMERA)
         .then(async (result) => {
-          await this.setState({hasCameraPermission: result.status === 'granted'});
+          this.setState({isAskingPermission: false, hasCameraPermission: result.status === 'granted'});
         })
         .catch(async (err) => {
           Toast.show({text: err.toString()});
-          await this.setState({hasCameraPermission: false});
+          this.setState({isAskingPermission: false, hasCameraPermission: false});
         });
   }
 }
@@ -176,6 +216,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-end",
     zIndex: 0
+  },
+  topControls: {
+    flex: 1,
+    paddingTop: '14%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
   },
   bottomControls: {
     flex: .23,

@@ -6,7 +6,21 @@ import {
   AsyncStorage,
   Alert
 } from 'react-native';
-import { Container, Header, Content, Button, Text, Form, Input, Item, Toast } from 'native-base';
+import {
+    Container,
+    Header,
+    Content,
+    Button,
+    Text,
+    Form,
+    Input,
+    Item,
+    Toast,
+    Left,
+    Body,
+    Title,
+    Right
+} from 'native-base';
 import api from '../../services/api';
 
 export default class RegisterScreen extends Component {
@@ -22,11 +36,6 @@ export default class RegisterScreen extends Component {
             passwordConfirm: ""
         };
         this.submitRegister = this.submitRegister.bind(this);
-        this.validatePasswords = this.validatePasswords.bind(this);
-    }
-
-    validatePasswords() {
-        return this.state.password === this.state.passwordConfirm;
     }
 
     performLogin(email, password) {
@@ -72,10 +81,16 @@ export default class RegisterScreen extends Component {
     render() {
         return (
             <Container>
-                <Header/>
-                <Content>
+                <Header>
+                    <Left/>
+                    <Body>
+                        <Title>Register</Title>
+                    </Body>
+                    <Right/>
+                </Header>
+                <Content padder contentContainerStyle={styles.container}>
                     <Form>
-                        <Item>
+                        <Item regular>
                             <Input
                                 floatingLabel
                                 style={styles.inputBox}
@@ -85,36 +100,34 @@ export default class RegisterScreen extends Component {
                                 autoCapitalize="none"
                                 returnKeyType="next"/>
                         </Item>
-                        <Item>
+                        <Item regular>
                             <Input
                                 floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({password: value})}
                                 placeholder="Password"
                                 returnKeyType="next"
-                                secureTextEntry={true}
-                                success={this.state.passwordConfirm && this.validatePasswords()}
-                                error={this.state.passwordConfirm && !this.validatePasswords()}/>
+                                secureTextEntry={true}/>
                         </Item>
-                        <Item>
+                        <Item regular>
                             <Input
                                 floatingLabel
                                 style={styles.inputBox}
                                 onChangeText={(value) => this.setState({passwordConfirm: value})}
                                 placeholder="Confirm password"
                                 returnKeyType="go"
-                                secureTextEntry={true}
-                                success={this.state.password && this.validatePasswords()}
-                                error={this.state.password && !this.validatePasswords()}/>
+                                secureTextEntry={true}/>
                         </Item>
-                        <Button style={styles.button} onPress={this.submitRegister}>
-                            <Text>Register</Text>
-                        </Button>
-                        <Button transparent={true} style={styles.button} onPress={() => {
-                            this.props.navigation.navigate('Login')
-                        }}>
-                            <Text>Already have an account ? Sign in</Text>
-                        </Button>
+                        <View style={{marginTop: 16}}>
+                            <Button style={styles.button} onPress={this.submitRegister}>
+                                <Text>Register</Text>
+                            </Button>
+                            <Button transparent={true} style={styles.button} onPress={() => {
+                                this.props.navigation.navigate('Login')
+                            }}>
+                                <Text>Already have an account ? Sign in</Text>
+                            </Button>
+                        </View>
                     </Form>
                 </Content>
             </Container>
@@ -123,11 +136,9 @@ export default class RegisterScreen extends Component {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    //marginTop: 160
-  },
-  inputBox: {},
-  button: {}
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

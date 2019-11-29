@@ -6,7 +6,7 @@ import {
     AsyncStorage,
     Alert
 } from 'react-native';
-import {Container, Header, Content, Button, Text, Form, Input, Item, Toast} from 'native-base';
+import {Container, Header, Content, Button, Text, Form, Input, Item, Title, Left, Body, Right, Toast} from 'native-base';
 import api from '../../services/api';
 
 export default class LoginScreen extends Component {
@@ -34,7 +34,7 @@ export default class LoginScreen extends Component {
                     api.setApiToken(json.data.token);
                     this.props.navigation.navigate('AppStack');
                 } else {
-                    Toast.show({ text: json.data, type: 'danger', buttonText: 'Dismiss' });
+                    Toast.show({text: json.data, type: 'danger', buttonText: 'Dismiss'});
                 }
             })
             .catch((err) => {
@@ -44,11 +44,17 @@ export default class LoginScreen extends Component {
 
     render() {
         return (
-            <Container style={styles.container}>
-                <Header/>
-                <Content>
+            <Container>
+                <Header>
+                    <Left/>
+                    <Body>
+                        <Title>Login</Title>
+                    </Body>
+                    <Right/>
+                </Header>
+                <Content padder contentContainerStyle={styles.container}>
                     <Form>
-                        <Item>
+                        <Item regular>
                             <Input
                                 floatingLabel
                                 style={styles.inputBox}
@@ -58,7 +64,7 @@ export default class LoginScreen extends Component {
                                 autoCapitalize="none"
                                 returnKeyType="next"/>
                         </Item>
-                        <Item>
+                        <Item regular>
                             <Input
                                 floatingLabel
                                 style={styles.inputBox}
@@ -67,12 +73,16 @@ export default class LoginScreen extends Component {
                                 returnKeyType="go"
                                 secureTextEntry={true}/>
                         </Item>
-                        <Button style={styles.button} onPress={this.submitLogin}>
-                            <Text>Login</Text>
-                        </Button>
-                        <Button transparent={true} style={styles.button} onPress={() => { this.props.navigation.navigate('Register')}}>
-                            <Text>Don't have an account yet ? Sign up</Text>
-                        </Button>
+                        <View>
+                            <Button onPress={this.submitLogin}>
+                                <Text>Login</Text>
+                            </Button>
+                            <Button transparent={true} style={styles.button} onPress={() => {
+                                this.props.navigation.navigate('Register')
+                            }}>
+                                <Text>Don't have an account yet ? Sign up</Text>
+                            </Button>
+                        </View>
                     </Form>
                 </Content>
             </Container>
@@ -82,5 +92,8 @@ export default class LoginScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-    }
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

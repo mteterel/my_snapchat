@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet, Alert, Image} from "react-native";
-import {Container, Content, Button, Footer, Text, View, Spinner} from "native-base";
+import {Container, Button, Footer, Text, View, Spinner, Content} from "native-base";
 import api from "../../services/api";
 
 export default class SnapViewScreen extends Component {
@@ -12,7 +12,7 @@ export default class SnapViewScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            timeLeft: 8,
+            timeLeft: 10,
             picture: null
         };
         this.intervalId = null;
@@ -23,14 +23,8 @@ export default class SnapViewScreen extends Component {
         if (snapId !== null) {
             api.getSnap(snapId)
                 .then((response) => {
-                    this.refreshCountdown();
-
-                    //Alert.alert("taille", JSON.stringify(response.data).length.toString());
-                    //const buffer = Buffer.from(response.data).toString('base64');
-                    //Alert.alert("err", JSON.stringify(response.data).substr(0, 128));
-                    this.setState({picture: response.data}, () => {
-                        this.intervalId = setInterval(this.refreshCountdown.bind(this), 1000);
-                    });
+                    this.setState({timeLeft: response.data.duration, picture: response.data.buffer});
+                    this.intervalId = setInterval(this.refreshCountdown.bind(this), 1000);
                 })
                 .catch((err) => {
                     Alert.alert(err.toString(), JSON.stringify(err));
@@ -64,11 +58,12 @@ export default class SnapViewScreen extends Component {
     render() {
         return (
             <Container>
+                <Content>
                     {this.state.picture && (
                         <Image style={{aspectRatio: 9 / 16, resizeMode: 'cover'}}
                                source={{uri: "data:image/jpeg;base64," + this.state.picture}}/>
                     )}
-                    {(this.state.picture && this.intervalId && this.state.timeLeft <= 10) && (
+                    {(this.state.picture && this.state.timeLeft <= 10) && (
                         <View style={styles.overlayUI}>
                             <Text style={styles.countdown}>{this.state.timeLeft}</Text>
                         </View>
@@ -76,6 +71,7 @@ export default class SnapViewScreen extends Component {
                     {(this.state.picture === null) && (
                         <Spinner/>
                     )}
+                </Content>
             </Container>
         );
     }
@@ -90,12 +86,13 @@ const styles = StyleSheet.create({
         bottom: 0,
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start'
     },
     countdown: {
-        fontSize: 130,
-        color: 'rgba(255, 255, 255, 0.75)',
+        fontSize: 72,
+        marginLeft: 16,
+        color: 'rgba(255, 255, 255, 0.7)',
         textShadowColor: 'black',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 3

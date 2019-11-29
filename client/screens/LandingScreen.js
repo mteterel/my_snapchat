@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
     images:{
         backgroundColor: '#ccc',
         flex: 1,
-        position: 'absolute',
-        resizeMode : 'center',
+        resizeMode : 'cover',
         width: '100%',
         height: '100%',
         justifyContent: 'center',

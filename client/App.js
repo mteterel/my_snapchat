@@ -23,7 +23,6 @@ export default function App(props) {
     return (
       <Root>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <StatusBar backgroundColor='red' barStyle='light-content' />
         <AppNavigator />
       </Root>
     );
