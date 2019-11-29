@@ -19,6 +19,7 @@ import config from "./config/index";
 import UserModel from "./models/User";
 import cors from 'cors';
 import SnapModel from "./models/Snap";
+const crypto = require('crypto');
 
 (async () => {
     await mongoose.connect(`${config.database.url}${config.database.name}`, {
@@ -38,9 +39,11 @@ import SnapModel from "./models/Snap";
         }
 
         try {
+            let hashedPassword = crypto.createHash('sha1')
+                .update(req.body.password).digest('hex');
             const user = await UserModel.create({
                 email: req.body.email,
-                password: req.body.password
+                password: hashedPassword
             });
             res.json({data: {email: user.email}});
         } catch (err) {
@@ -61,9 +64,11 @@ import SnapModel from "./models/Snap";
                 res.json({data: "Invalid token."});
             }
         } else {
+            let hashedPassword = crypto.createHash('sha1')
+                .update(req.body.password).digest('hex');
             const user = await UserModel.findOne({
                 email: req.body.email,
-                password: req.body.password
+                password: hashedPassword
             });
 
             if (!user) {
