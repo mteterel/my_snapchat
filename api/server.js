@@ -39,7 +39,7 @@ const crypto = require('crypto');
         }
 
         try {
-            let hashedPassword = crypto.createHash('sha1')
+            let hashedPassword = crypto.createHash('sha256')
                 .update(req.body.password).digest('hex');
             const user = await UserModel.create({
                 email: req.body.email,
@@ -64,7 +64,7 @@ const crypto = require('crypto');
                 res.json({data: "Invalid token."});
             }
         } else {
-            let hashedPassword = crypto.createHash('sha1')
+            let hashedPassword = crypto.createHash('sha256')
                 .update(req.body.password).digest('hex');
             const user = await UserModel.findOne({
                 email: req.body.email,
