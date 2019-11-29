@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let config = {
-    apiUrl: 'http://localhost:4242',
+    apiUrl: 'http://exetra.dev:4242',
     token: null,
 };
 
