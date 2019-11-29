@@ -118,7 +118,7 @@ const crypto = require('crypto');
     app.get("/snap/:id", middleware.validateToken, async (req, res) => {
         const snap = await SnapModel.findById(req.params.id);
         const buffer = Buffer.from(snap.file).toString('base64');
-        res.json(buffer);
+        res.json({duration: snap.duration, buffer: buffer});
     });
 
     app.get("/snaps", middleware.validateToken, async (req, res) => {
