@@ -53,7 +53,8 @@ export default class InboxScreen extends Component {
                                         <MaterialIcons size={48} name="photo" color="pink"/>
                                     </Left>
                                     <Body>
-                                        <Text>{element.from}</Text>
+                                        <Text>{element.title || "Untitled Snap"}</Text>
+                                        <Text note>From {element.from}</Text>
                                     </Body>
                                     <Right>
                                         <Button primary transparent onPress={() => {

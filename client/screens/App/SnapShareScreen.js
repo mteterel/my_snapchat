@@ -19,7 +19,8 @@ export default class SnapShareScreen extends Component {
             loadingContacts: true,
             contacts: [],
             selectedContact: null,
-            selectedSnapDuration: 5
+            selectedSnapDuration: 5,
+            snapTitle: ""
         };
 
         this.onContactSelected = this.onContactSelected.bind(this);
@@ -98,12 +99,12 @@ export default class SnapShareScreen extends Component {
                                     </Picker>
                                 </Item>
                                 <Item regular>
-                                    <Input placeholder="Text to include in the picture" />
+                                    <Input placeholder="Title" onChangeText={(value) => this.setState({snapTitle: value})}/>
                                 </Item>
                             </Form>
                             <List>
                                 <Separator bordered>
-                                    <Text>Selet a contact ({this.state.contacts.length})</Text>
+                                    <Text>Select a contact ({this.state.contacts.length})</Text>
                                 </Separator>
                                 {this.state.contacts.map((elem, index) => {
                                     return (

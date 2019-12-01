@@ -106,7 +106,8 @@ import crypto from 'crypto';
                 from: req.user.email,
                 to: req.body.to,
                 duration: req.body.duration,
-                file: Buffer.from(req.body.image, 'base64')
+                file: Buffer.from(req.body.image, 'base64'),
+                title: req.body.title
             });
 
             return res.json({data: 'Snap Created'});
@@ -132,7 +133,8 @@ import crypto from 'crypto';
         const data = allSnaps.map((elem) => {
             return {
                 snap_id: elem._id,
-                from: elem.from
+                from: elem.from,
+                title: elem.title
             }
         });
         await res.json({ data: data });
