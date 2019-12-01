@@ -16,5 +16,6 @@ export default mongoose.model('Snap', {
     from: { type: String, required: true },
     to: { type: String, required: true },
     duration: { type: Number, required: true },
-    file: { type: Buffer, required: true }
+    file: { type: Buffer, required: true },
+    title: { type: String, required: false, default: null }
 });

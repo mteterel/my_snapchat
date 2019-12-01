@@ -29,11 +29,12 @@ export default {
             headers: {token: config.token}
         });
     },
-    sendSnap: (contactEmail, duration, picture) => {
+    sendSnap: (contactEmail, duration, title, picture) => {
         return axios.post(`${config.apiUrl}/snap`, {
             duration: duration,
             to: contactEmail,
-            image: picture
+            image: picture,
+            title: title
         }, {
             headers: {token: config.token}
         });
