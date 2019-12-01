@@ -69,7 +69,7 @@ export default class LandignScreen extends Component {
                                     onPress={() => {
                                         this.props.navigation.navigate('Register')
                                     }}
-                            ><Text>Registered</Text></Button>
+                            ><Text>Register</Text></Button>
                         </View>)}
                 </ImageBackground>
             </Container>
