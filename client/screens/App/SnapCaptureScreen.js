@@ -84,7 +84,7 @@ export default class SnapCaptureScreen extends Component {
   snapPicture() {
     if (this.camera) {
       const options = {
-        quality: 1.0,
+        quality: 0.7,
         base64: true,
         exif: false,
         skipProcessing: true

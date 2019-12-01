@@ -128,7 +128,7 @@ import crypto from 'crypto';
     });
 
     app.get("/snaps", middleware.validateToken, async (req, res) => {
-        const allSnaps = await SnapModel.find();
+        const allSnaps = await SnapModel.find({ to: req.user.email });
         const data = allSnaps.map((elem) => {
             return {
                 snap_id: elem._id,
