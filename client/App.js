@@ -2,9 +2,11 @@ import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Root } from 'native-base';
+import { Root, StyleProvider } from 'native-base';
+import platform from "./native-base-theme/variables/platform";
+import getTheme from "./native-base-theme/components";
 
 import AppNavigator from './navigation/AppNavigator';
 
@@ -13,18 +15,20 @@ export default function App(props) {
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
-      <AppLoading
-        startAsync={loadResourcesAsync}
-        onError={handleLoadingError}
-        onFinish={() => handleFinishLoading(setLoadingComplete)}
-      />
+        <AppLoading
+            startAsync={loadResourcesAsync}
+            onError={handleLoadingError}
+            onFinish={() => handleFinishLoading(setLoadingComplete)}
+        />
     );
   } else {
     return (
-      <Root>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <AppNavigator />
-      </Root>
+        <StyleProvider style={getTheme(platform)}>
+          <Root>
+
+            <AppNavigator />
+          </Root>
+        </StyleProvider>
     );
   }
 }
