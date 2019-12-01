@@ -112,6 +112,7 @@ export default class SnapCaptureScreen extends Component {
           <Camera
               style={{flex: 1}}
               ratio="16:9"
+              autoFocus={Camera.Constants.AutoFocus.off}
               ref={camera => this.camera = camera}
               type={this.state.cameraType}
               flashMode={this.state.enableFlash}/>
@@ -179,21 +180,6 @@ export default class SnapCaptureScreen extends Component {
         </Container>
     )
   }
-
-  /*if (this.state.hasCameraPermission) {
-    return (
-        <View style={{flex: 1}}>
-          {this.renderCamera()}
-          {this.renderUI()}
-        </View>
-    )
-  } else {
-    return (
-        <View style={{flex: 1}}>
-          {this.renderRetryPermissionUI()}
-        </View>
-    )
-  }*/
 
   async askCameraPermission() {
     this.setState({isAskingPermission: true});

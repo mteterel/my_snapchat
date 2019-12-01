@@ -19,7 +19,7 @@ import config from "./config/index";
 import UserModel from "./models/User";
 import cors from 'cors';
 import SnapModel from "./models/Snap";
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 (async () => {
     await mongoose.connect(`${config.database.url}${config.database.name}`, {
@@ -34,7 +34,7 @@ const crypto = require('crypto');
 
     app.post("/register", async (req, res) => {
         if (!req.body.email || !req.body.password) {
-            res.json({data: "Missing parameters"});
+            await res.json({data: "Missing parameters"});
             return;
         }
 
@@ -45,9 +45,9 @@ const crypto = require('crypto');
                 email: req.body.email,
                 password: hashedPassword
             });
-            res.json({data: {email: user.email}});
+            await res.json({data: {email: user.email}});
         } catch (err) {
-            res.json({data: err.toString()});
+            await res.json({data: err.toString()});
         }
     });
 
@@ -59,9 +59,9 @@ const crypto = require('crypto');
         if (req.body.token) {
             try {
                 const userData = await jwt.verify(req.body.token, config.app.secret);
-                res.json({data: {email: userData.email, token: req.body.token}});
+                await res.json({data: {email: userData.email, token: req.body.token}});
             } catch (err) {
-                res.json({data: "Invalid token."});
+                await res.json({data: "Invalid token."});
             }
         } else {
             let hashedPassword = crypto.createHash('sha256')
@@ -72,11 +72,11 @@ const crypto = require('crypto');
             });
 
             if (!user) {
-                res.json({data: "Invalid credentials."});
+                await res.json({data: "Invalid credentials."});
                 return;
             }
 
-            res.json({
+            await res.json({
                 data: {
                     email: user.email,
                     token: jwt.sign({id: user.id, email: user.email}, config.app.secret)
@@ -88,13 +88,13 @@ const crypto = require('crypto');
     app.get("/all", middleware.validateToken, async (req, res) => {
         try {
             const allUsers = await UserModel.find({ email: { $ne: req.user.email }});
-            res.json({
+            await res.json({
                 data: allUsers.map((elem) => {
                     return {email: elem.email}
                 })
             });
         } catch(err) {
-            res.json({
+            await res.json({
                 data: err.toString()
             });
         }
@@ -117,8 +117,14 @@ const crypto = require('crypto');
 
     app.get("/snap/:id", middleware.validateToken, async (req, res) => {
         const snap = await SnapModel.findById(req.params.id);
-        const buffer = Buffer.from(snap.file).toString('base64');
-        res.json({duration: snap.duration, buffer: buffer});
+
+        if (snap !== null) {
+            const buffer = Buffer.from(snap.file).toString('base64');
+            await res.json({duration: snap.duration, buffer: buffer});
+        }
+        else {
+            await res.json({data: "Snap not found."});
+        }
     });
 
     app.get("/snaps", middleware.validateToken, async (req, res) => {
@@ -129,19 +135,23 @@ const crypto = require('crypto');
                 from: elem.from
             }
         });
-        res.json({ data: data });
+        await res.json({ data: data });
     });
 
     app.post("/seen", middleware.validateToken, async (req, res) => {
-        var currentSnap = new mongoose.Types.ObjectId(req.body.snap_id);
-        console.log(currentSnap);
-        const snapToDelete = await SnapModel.findById(currentSnap , function (err) {
-            if(err) console.log(err);
-            else {
-                console.log("Successful deletion");
+        const currentSnapId = new mongoose.Types.ObjectId(req.body.snap_id);
+        const snapToDelete = await SnapModel.findById(currentSnapId);
+
+        try {
+            if (snapToDelete === null) {
+                await res.json({data: "Snap not found"});
+            } else {
+                await snapToDelete.remove();
+                await res.json({data: "Snap deleted"});
             }
-        });
-        snapToDelete.remove();
+        } catch (err) {
+            await res.json({data: "An error occurred"});
+        }
     });
 
     app.listen(4242, () => {
