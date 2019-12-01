@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {
-  StyleSheet,
-  Keyboard,
-  View,
-  AsyncStorage,
-  Alert
+    StyleSheet,
+    Keyboard,
+    View,
+    AsyncStorage,
+    Alert, ImageBackground
 } from 'react-native';
 import {
     Container,
@@ -81,7 +81,8 @@ export default class RegisterScreen extends Component {
     render() {
         return (
             <Container>
-                <Header>
+                <ImageBackground source={require('../../assets/images/staline3.jpg')} style={styles.images}>
+                <Header style={styles.title}>
                     <Left/>
                     <Body>
                         <Title>Register</Title>
@@ -89,7 +90,7 @@ export default class RegisterScreen extends Component {
                     <Right/>
                 </Header>
                 <Content padder contentContainerStyle={styles.container}>
-                    <Form>
+                    <Form style={styles.form}>
                         <Item regular>
                             <Input
                                 floatingLabel
@@ -122,14 +123,15 @@ export default class RegisterScreen extends Component {
                             <Button style={styles.button} onPress={this.submitRegister}>
                                 <Text>Register</Text>
                             </Button>
-                            <Button transparent={true} style={styles.button} onPress={() => {
+                            <Button transparent={true}  onPress={() => {
                                 this.props.navigation.navigate('Login')
                             }}>
-                                <Text>Already have an account ? Sign in</Text>
+                                <Text style={styles.button2}>Already have an account ? Sign in</Text>
                             </Button>
                         </View>
                     </Form>
                 </Content>
+                </ImageBackground>
             </Container>
         );
     }
@@ -140,5 +142,29 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    images:{
+        backgroundColor: '#ccc',
+        flex: 1,
+        resizeMode : 'cover',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+    },
+    inputBox:{
+        backgroundColor: '#ffffff',
+    },
+    form:{
+        marginTop: 450,
+    },
+    button:{
+        backgroundColor: '#e86431',
+        borderWidth: 1,
+    },
+    button2:{
+    color: '#ffffff'
+    },
+    title:{
+        backgroundColor:  '#f54e4e',
     },
 });
