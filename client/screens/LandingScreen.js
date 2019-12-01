@@ -7,7 +7,7 @@ import {
     Dimensions,
     ImageBackground
 } from 'react-native';
-import { Container, Content, Button, Text, View, Toast, Spinner } from 'native-base';
+import { Container, Content, Button, Image, Text, View, Toast, Spinner } from 'native-base';
 import api from "../services/api";
 
 export default class LandignScreen extends Component {
@@ -59,6 +59,7 @@ export default class LandignScreen extends Component {
                     {!this.state.isAutoLogin && (
                         <View style={styles.homescreen}>
                             <Text style={styles.logoText}>Снапчате</Text>
+                            {/*<Image source={require('../assets/images/logo.png')}/>*/}
                             <Button style={styles.button1}
                                     onPress={() => {
                                         this.props.navigation.navigate('Login')
@@ -68,7 +69,7 @@ export default class LandignScreen extends Component {
                                     onPress={() => {
                                         this.props.navigation.navigate('Register')
                                     }}
-                            ><Text>Register</Text></Button>
+                            ><Text>Registered</Text></Button>
                         </View>)}
                 </ImageBackground>
             </Container>
