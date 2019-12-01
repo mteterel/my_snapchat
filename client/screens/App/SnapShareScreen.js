@@ -19,7 +19,7 @@ export default class SnapShareScreen extends Component {
             loadingContacts: true,
             contacts: [],
             selectedContact: null,
-            selectedSnapDuration: null
+            selectedSnapDuration: 5
         };
 
         this.onContactSelected = this.onContactSelected.bind(this);
